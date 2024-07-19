@@ -10,13 +10,35 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>{% block title %}{% endblock %}</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        /* Estilos de TailwindCSS personalizados aquí */
+    </style>
 </head>
 <body class="text-gray-800 font-inter">
     <div class="flex">
         {% include "sidebar.html" %}
-        <main class="w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-200 min-h-screen transition-all main">
-            {% block content %}{% endblock %}
+        <main class="w-full  md:ml-64 bg-gray-200 min-h-screen transition-all">
+            {% block content %}
+                {% include "dashboard.html" %}
+            {% endblock %}
         </main>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdownToggles = document.querySelectorAll('.sidebar-dropdown-toggle');
+            dropdownToggles.forEach(function (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function () {
+                    var nextElement = dropdownToggle.nextElementSibling;
+                    if (nextElement.classList.contains('hidden')) {
+                        nextElement.classList.remove('hidden');
+                    } else {
+                        nextElement.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
