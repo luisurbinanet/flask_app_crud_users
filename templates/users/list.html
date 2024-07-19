@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Users</h1>
+    <a href="{{ url_for('users.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Add User</a>
+    <table class="min-w-full bg-white mt-4">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b border-gray-200">Name</th>
+                <th class="py-2 px-4 border-b border-gray-200">Email</th>
+                <th class="py-2 px-4 border-b border-gray-200">Role</th>
+                <th class="py-2 px-4 border-b border-gray-200">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td class="py-2 px-4 border-b border-gray-200">{{ user.name }}</td>
+                <td class="py-2 px-4 border-b border-gray-200">{{ user.email }}</td>
+                <td class="py-2 px-4 border-b border-gray-200">{{ user.role.name }}</td>
+                <td class="py-2 px-4 border-b border-gray-200">
+                    <a href="{{ url_for('users.edit', id=user.id) }}" class="text-blue-500">Edit</a>
+                    <form action="{{ url_for('users.delete', id=user.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="text-red-500">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

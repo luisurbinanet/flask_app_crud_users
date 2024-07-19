@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Roles{% endblock %}
+
+{% block content %}
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Roles</h1>
+    <a href="{{ url_for('roles.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Add Role</a>
+    <table class="min-w-full bg-white mt-4">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b border-gray-200">Name</th>
+                <th class="py-2 px-4 border-b border-gray-200">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td class="py-2 px-4 border-b border-gray-200">{{ role.name }}</td>
+                <td class="py-2 px-4 border-b border-gray-200">
+                    <a href="{{ url_for('roles.edit', id=role.id) }}" class="text-blue-500">Edit</a>
+                    <form action="{{ url_for('roles.delete', id=role.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="text-red-500">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
