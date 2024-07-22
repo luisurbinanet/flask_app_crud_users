@@ -1,13 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField
-from wtforms.validators import DataRequired
+from wtforms import StringField, FileField, ColorField, validators
 
-class SettingsForm(FlaskForm):
-    app_name = StringField('Application Name', validators=[DataRequired()])
-    logo = FileField('Logo')
-    primary_color = StringField('Primary Color')
-    secondary_color = StringField('Secondary Color')
-    success_color = StringField('Success Color')
-    warning_color = StringField('Warning Color')
-    danger_color = StringField('Danger Color')
-    error_color = StringField('Error Color')
+def generate_settings_form(settings):
+    class SettingsForm(FlaskForm):
+        pass
+
+    for setting in settings:
+        if setting.key == 'logo':
+            field = FileField(setting.label, validators=[validators.Optional()])
+        elif 'color' in setting.key:
+            field = ColorField(setting.label, validators=[validators.DataRequired()])
+        else:
+            field = StringField(setting.label, validators=[validators.DataRequired()])
+        setattr(SettingsForm, setting.key, field)
+
+    return SettingsForm

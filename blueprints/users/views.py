@@ -33,19 +33,24 @@ def create():
 
 @users_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
+    '''Edit User'''
     user = User.query.get_or_404(id)
     form = UserForm(obj=user)
     if form.validate_on_submit():
         form.populate_obj(user)
-        if form.password.data:  # Solo hashear la contraseña si se proporciona una nueva
+        if form.password.data:  # Hashear la contraseña solo si se proporciona una nueva
             user.password = generate_password_hash(form.password.data, method='sha256')
+
+        user.role_id = form.role_id.data
         user.permissions = Permission.query.filter(Permission.id.in_(form.permissions.data)).all()
         db.session.commit()
         flash('User updated successfully.')
         return redirect(url_for('users.index'))
+    
     form.role_id.data = user.role_id
     form.permissions.data = [perm.id for perm in user.permissions]
     return render_template('users/form.html', form=form, title='Edit User', breadcrumb_title=module)
+
 
 @users_bp.route('/delete/<int:id>', methods=['POST'])
 def delete(id):
