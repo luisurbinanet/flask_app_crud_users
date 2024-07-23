@@ -5,8 +5,9 @@
 {% block content %}
 <div class="p-4">
     {% include "breadcrumb.html" %}
-    <h1 class="text-2xl font-bold mb-4">Permissions</h1>
-    <a href="{{ url_for('permissions.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Add Permission</a>
+
+    {% set url_create = url_for('permissions.create') %}
+    {% include "components/header_with_button.html" %}
     <table class="min-w-full bg-white mt-4">
         <thead>
             <tr>
@@ -18,13 +19,11 @@
             {% for permission in permissions %}
             <tr>
                 <td class="py-2 px-4 border-b border-gray-200">{{ permission.name }}</td>
-                <td class="py-2 px-4 border-b border-gray-200">
-                    <a href="{{ url_for('permissions.edit', id=permission.id) }}" class="text-blue-500">Edit</a>
-                    <form action="{{ url_for('permissions.delete', id=permission.id) }}" method="post" style="display:inline;">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="text-red-500">Delete</button>
-                    </form>
-                </td>
+
+                {% set edit_url = url_for('permissions.edit', id=permission.id) %}
+                {% set delete_url = url_for('permissions.delete', id=permission.id) %}
+
+                {% include "components/action_buttons.html" %}
             </tr>
             {% endfor %}
         </tbody>

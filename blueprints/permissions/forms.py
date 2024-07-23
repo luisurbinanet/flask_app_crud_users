@@ -3,4 +3,4 @@ from wtforms import StringField
 from wtforms.validators import DataRequired
 
 class PermissionForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField('Nombre', validators=[DataRequired()])

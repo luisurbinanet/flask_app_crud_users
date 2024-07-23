@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request
 from . import settings_bp
 from .forms import generate_settings_form
-from models import db, Settings
+from extensions import db
+from models import Settings
 
 module = 'Configuración'
 
@@ -53,10 +54,13 @@ def add_setting():
         key = request.form.get('key')
         value = request.form.get('value')
         label = request.form.get('label')
+        
         if key and value and label:
             setting = Settings(key=key, value=value, label=label)
             db.session.add(setting)
             db.session.commit()
             flash('Setting added successfully.')
+
             return redirect(url_for('settings.config'))
+        
     return render_template('settings/add_setting.html', title='Add Setting')

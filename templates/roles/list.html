@@ -1,31 +1,29 @@
 {% extends "layout.html" %}
 
-{% block title %}Roles{% endblock %}
+{% block title %}{{ pluralModelLabel }}{% endblock %}
 
 {% block content %}
 <div class="p-4">
     {% include "breadcrumb.html" %}
 
-    <h1 class="text-2xl font-bold mb-4">Roles</h1>
-    <a href="{{ url_for('roles.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Add Role</a>
+    {% set url_create = url_for('roles.create') %}
+    {% include "components/header_with_button.html" %}
+
     <table class="min-w-full bg-white mt-4">
         <thead>
             <tr>
-                <th class="py-2 px-4 border-b border-gray-200">Name</th>
-                <th class="py-2 px-4 border-b border-gray-200">Actions</th>
+                <th class="py-2 px-4 border-b border-gray-200">Nombre</th>
+                <th class="py-2 px-4 border-b border-gray-200">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for role in roles %}
             <tr>
                 <td class="py-2 px-4 border-b border-gray-200">{{ role.name }}</td>
-                <td class="py-2 px-4 border-b border-gray-200">
-                    <a href="{{ url_for('roles.edit', id=role.id) }}" class="text-blue-500">Edit</a>
-                    <form action="{{ url_for('roles.delete', id=role.id) }}" method="post" style="display:inline;">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="text-red-500">Delete</button>
-                    </form>
-                </td>
+                {% set edit_url = url_for('roles.edit', id=role.id) %}
+                {% set delete_url = url_for('roles.delete', id=role.id) %}
+
+                {% include "components/action_buttons.html" %}
             </tr>
             {% endfor %}
         </tbody>
