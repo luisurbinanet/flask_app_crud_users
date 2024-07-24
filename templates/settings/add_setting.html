@@ -1,30 +1,32 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ pluralModelLabel }}{% endblock %}
 
 {% block content %}
 <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
+    {% include "breadcrumb.html" %}
+    
+    {% set module_settings = True %}
+    {% set url_create = url_for('settings.config') %}
+    {% include "components/header_with_button.html" %}
+
     <form method="POST">
+        {{ form.hidden_tag() }}
         <div class="mb-4">
             <label for="key" class="block text-gray-700 font-bold mb-2">Key</label>
-            <input class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text" name="key" id="key" required>
+            {{ form.key(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
         </div>
         <div class="mb-4">
             <label for="label" class="block text-gray-700 font-bold mb-2">Campo</label>
-            <input class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text" name="label" id="label" required>
+            {{ form.label(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
         </div>
         <div class="mb-4">
             <label for="value" class="block text-gray-700 font-bold mb-2">Valor</label>
-            <input class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text" name="value" id="value" required>
+            {{ form.value(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
         </div>
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
             Agregar
         </button>
     </form>
-    <a href="{{ url_for('settings.config') }}">Volver a Configuración</a>
 </div>
 {% endblock %}

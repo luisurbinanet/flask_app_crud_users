@@ -1,10 +1,16 @@
-from flask import render_template, redirect, url_for, flash, request
-from . import settings_bp
-from .forms import generate_settings_form
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from extensions import db
 from models import Settings
+from .forms import generate_settings_form, AddSettingForm
+from sqlalchemy.exc import IntegrityError
+import os
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 
-module = 'Configuración'
+from . import settings_bp  # Importar el Blueprint desde __init__.py
+
+model_label = 'Configuración'
+plural_model_label = model_label
 
 # Valores predeterminados
 default_settings = [
@@ -30,37 +36,53 @@ def config():
     initialize_default_settings()
     settings = Settings.query.all()
     SettingsForm = generate_settings_form(settings)
-    form = SettingsForm(request.form)
+    form = SettingsForm()
+
+    # Prepopulate the form with existing settings values
+    if request.method == 'GET':
+        for setting in settings:
+            form_field = getattr(form, setting.key)
+            form_field.data = setting.value
     
     if form.validate_on_submit():
-        for key, value in form.data.items():
-            if key == 'csrf_token':
-                continue
-            setting = Settings.query.filter_by(key=key).first()
-            if setting:
-                setting.value = value
-            else:
-                setting = Settings(key=key, value=value, label=setting.label)
-                db.session.add(setting)
-        db.session.commit()
-        flash('Settings updated successfully.')
+        try:
+            with db.session.no_autoflush:
+                for setting in settings:
+                    form_field = getattr(form, setting.key)
+                    if form_field.data is not None:
+                        if setting.key == 'logo' and isinstance(form_field.data, FileStorage):
+                            file = form_field.data
+                            if file.filename != '':
+                                filename = secure_filename(file.filename)
+                                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'logo', filename)
+                                file.save(file_path)
+                                setting.value = filename
+                        else:
+                            setting.value = form_field.data
+                    else:
+                        setting.value = ""
+            db.session.commit()
+            flash('Settings updated successfully.')
+        except IntegrityError:
+            db.session.rollback()
+            flash('An error occurred while updating settings.', 'error')
         return redirect(url_for('settings.config'))
-    
-    return render_template('settings/form.html', form=form, title='Settings')
+
+    return render_template('settings/form.html', form=form, modelLabel=model_label, pluralModelLabel=plural_model_label)
 
 @settings_bp.route('/add', methods=['GET', 'POST'])
 def add_setting():
-    if request.method == 'POST':
-        key = request.form.get('key')
-        value = request.form.get('value')
-        label = request.form.get('label')
+    form = AddSettingForm()
+    if form.validate_on_submit():
+        key = form.key.data
+        value = form.value.data
+        label = form.label.data
         
-        if key and value and label:
+        if key and label:
             setting = Settings(key=key, value=value, label=label)
             db.session.add(setting)
             db.session.commit()
             flash('Setting added successfully.')
-
             return redirect(url_for('settings.config'))
-        
-    return render_template('settings/add_setting.html', title='Add Setting')
+    
+    return render_template('settings/add_setting.html', form=form, action='Agregar', modelLabel=model_label, pluralModelLabel=plural_model_label)
