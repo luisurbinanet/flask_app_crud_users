@@ -68,24 +68,14 @@ def create():
         file = form.avatar.data
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER_AVATAR'], filename)
             file.save(file_path)
             
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        # user = User(
-        #     name=form.name.data,
-        #     email=form.email.data,
-        #     password=hashed_password,
-        #     avatar=form.avatar.data,
-        #     role_id=form.role_id.data
-        # )
-        # db.session.add(user)
-        # db.session.commit()
-        # user.permissions = Permission.query.filter(Permission.id.in_(form.permissions.data)).all()
+        # hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(
                 name=form.name.data,
                 email=form.email.data,
-                password=generate_password_hash(form.password.data),
+                password=generate_password_hash(form.password.data, method='sha256'),
                 avatar=filename,
                 role_id=form.role_id.data
             )
@@ -119,7 +109,8 @@ def edit(id):
             file = form.avatar.data
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                # file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER_AVATAR'], filename)
                 file.save(file_path)
                 user.avatar = filename
 

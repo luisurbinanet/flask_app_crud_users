@@ -50,13 +50,16 @@ def config():
                 for setting in settings:
                     form_field = getattr(form, setting.key)
                     if form_field.data is not None:
-                        if setting.key == 'logo' and isinstance(form_field.data, FileStorage):
-                            file = form_field.data
-                            if file.filename != '':
-                                filename = secure_filename(file.filename)
-                                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'logo', filename)
-                                file.save(file_path)
-                                setting.value = filename
+                        if setting.key == 'logo':
+                            if 'delete_logo' in request.form and request.form['delete_logo'] == 'on':
+                                setting.value = ""
+                            elif isinstance(form_field.data, FileStorage):
+                                file = form_field.data
+                                if file.filename != '':
+                                    filename = secure_filename(file.filename)
+                                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER_LOGO'], filename)
+                                    file.save(file_path)
+                                    setting.value = filename
                         else:
                             setting.value = form_field.data
                     else:

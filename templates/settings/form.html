@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="p-4">
-    {% include "breadcrumb.html" %}
+    {% include "components/breadcrumb.html" %}
 
     {% set url_create = url_for('settings.add_setting') %}
     {% include "components/header_with_button.html" %}
@@ -20,6 +20,10 @@
                         {% if field.data %}
                             <div class="mt-2">
                                 <img src="{{ url_for('static', filename='images/logo/' ~ field.data) }}" alt="Current Logo" class="h-20">
+                                <div class="mt-2">
+                                    <input type="checkbox" id="delete_logo" name="delete_logo">
+                                    <label for="delete_logo">Eliminar Logo Actual</label>
+                                </div>
                             </div>
                         {% endif %}
                     {% elif 'color' in field.id %}

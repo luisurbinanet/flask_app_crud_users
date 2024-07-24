@@ -8,5 +8,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = True
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/images')
+    UPLOAD_FOLDER_LOGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/images/logo')
+    UPLOAD_FOLDER_AVATAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/images/avatar')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
